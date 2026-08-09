@@ -5,18 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Androma Tasker</title>
   
-  <!-- PWA / iOS Meta Tags -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Androma" />
   <meta name="theme-color" content="#000000" />
 
-  <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -37,10 +34,7 @@
     }
   </script>
 
-  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-
-  <!-- External Sync Client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
@@ -95,7 +89,6 @@
       padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
     }
 
-    /* CUSTOM SELECT STYLING WITHOUT NATIVE ARROWS */
     select.custom-select {
       appearance: none;
       -webkit-appearance: none;
@@ -104,7 +97,6 @@
       text-align-last: center;
     }
 
-    /* TRIGGER ANIMATIONS FOR EVERY STATE UPDATE */
     @keyframes iosEnter {
       from { opacity: 0; transform: translateY(8px) scale(0.97); }
       to { opacity: 1; transform: translateY(0) scale(1); }
@@ -151,24 +143,18 @@
 
 <body class="min-h-full flex flex-col justify-between select-none antialiased">
 
-  <!-- HEADER BAR -->
   <header class="sticky top-0 z-30 pt-4 pb-3 px-5 flex items-center justify-between ios-blur border-b">
-    <!-- Clean Text-Only Logo (No icons/stars) -->
     <div>
       <h1 class="text-base font-bold leading-tight">Androma Tasker</h1>
       <p class="text-[11px] text-ios-textSecondary font-normal">Голосовой органайзер</p>
     </div>
 
-    <!-- Theme Switcher Button (Icon Only) -->
     <button id="btn-theme-toggle" class="w-9 h-9 rounded-full ios-subcard flex items-center justify-center active:scale-95 transition-transform">
       <i id="icon-theme" data-lucide="sun" class="w-4 h-4"></i>
     </button>
   </header>
 
-  <!-- MAIN CONTAINER -->
   <main class="flex-1 max-w-lg w-full mx-auto px-4 py-5 flex flex-col space-y-5 mb-28">
-    
-    <!-- TABS CONTROL -->
     <div class="flex p-1 ios-card rounded-full">
       <button data-tab="today" class="tab-btn flex-1 py-2 text-xs font-semibold rounded-full transition-all duration-200 bg-ios-blue text-white">
         Сегодня (<span id="count-today" class="inline-block">0</span>)
@@ -181,7 +167,6 @@
       </button>
     </div>
 
-    <!-- AI PROCESSING CARD -->
     <div id="ai-loader" class="hidden ios-card rounded-2xl p-5 text-center space-y-2 animate-enter">
       <div class="flex justify-center">
         <i data-lucide="loader-2" class="w-5 h-5 text-ios-blue animate-spin"></i>
@@ -192,12 +177,8 @@
       </div>
     </div>
 
-    <!-- TASK LIST -->
-    <div id="task-list" class="space-y-3">
-      <!-- Dynamic Tasks Render Here -->
-    </div>
+    <div id="task-list" class="space-y-3"></div>
 
-    <!-- EMPTY STATE -->
     <div id="empty-state" class="hidden flex-col items-center justify-center py-16 text-center space-y-3 animate-enter">
       <div class="w-12 h-12 rounded-full ios-subcard flex items-center justify-center text-ios-textSecondary">
         <i data-lucide="check-circle-2" class="w-6 h-6"></i>
@@ -207,10 +188,8 @@
         <p class="text-xs text-ios-textSecondary mt-1 max-w-xs">Нажмите на микрофон или введите текст для добавления планов.</p>
       </div>
     </div>
-
   </main>
 
-  <!-- AI DRAFT MODAL SHEET -->
   <div id="modal-draft" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-end justify-center">
     <div class="w-full max-w-lg ios-card rounded-t-3xl max-h-[85vh] flex flex-col overflow-hidden animate-enter">
       <div class="p-5 border-b border-white/10 flex justify-between items-center">
@@ -223,9 +202,7 @@
         </button>
       </div>
 
-      <div id="draft-tasks-container" class="p-5 overflow-y-auto space-y-3 flex-1">
-        <!-- Draft Items with editable date buttons -->
-      </div>
+      <div id="draft-tasks-container" class="p-5 overflow-y-auto space-y-3 flex-1"></div>
 
       <div class="p-4 border-t border-white/10 safe-area-bottom flex space-x-3">
         <button id="btn-discard-draft" class="flex-1 py-3 text-xs font-semibold ios-subcard rounded-full hover:opacity-80 transition">Отмена</button>
@@ -234,7 +211,6 @@
     </div>
   </div>
 
-  <!-- 100% IN-HTML CUSTOM DATE & TIME PICKER MODAL -->
   <div id="modal-date-picker" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="w-full max-w-xs ios-card rounded-3xl p-5 space-y-4 animate-enter">
       <div class="flex justify-between items-center">
@@ -244,7 +220,6 @@
         </button>
       </div>
       
-      <!-- Quick Preset Buttons -->
       <div class="grid grid-cols-2 gap-2">
         <button onclick="applyDatePreset('today')" class="py-1.5 px-3 rounded-full ios-subcard text-[11px] font-medium hover:text-ios-blue transition">Сегодня</button>
         <button onclick="applyDatePreset('tomorrow')" class="py-1.5 px-3 rounded-full ios-subcard text-[11px] font-medium hover:text-ios-blue transition">Завтра</button>
@@ -252,7 +227,6 @@
         <button onclick="applyDatePreset('plus1d')" class="py-1.5 px-3 rounded-full ios-subcard text-[11px] font-medium hover:text-ios-blue transition">+1 День</button>
       </div>
 
-      <!-- Fully Custom Selectors (No native picker triggers) -->
       <div class="space-y-3 pt-2">
         <div>
           <label class="text-[10px] uppercase font-bold text-ios-textSecondary block mb-1">Дата</label>
@@ -279,73 +253,61 @@
     </div>
   </div>
 
-  <!-- FIXED BOTTOM INPUT BAR -->
   <div class="fixed bottom-0 inset-x-0 z-40 ios-blur safe-area-bottom pt-3 pb-3 px-4 border-t">
     <div class="max-w-lg mx-auto flex items-end space-x-2">
-      
-      <!-- Input Pill -->
       <div class="flex-1 ios-subcard rounded-full px-4 py-2.5 flex items-center min-h-[44px]">
         <textarea id="text-input" rows="1" placeholder="Запишите мысли..." class="w-full bg-transparent text-sm placeholder-ios-textSecondary focus:outline-none resize-none max-h-24 leading-snug"></textarea>
       </div>
 
-      <!-- Microphone & Action Buttons -->
       <div class="relative flex items-center space-x-2">
-        <!-- Recording Status Indicator -->
         <div id="recording-status" class="hidden absolute -top-11 right-0 bg-ios-red text-white px-3 py-1 rounded-full text-[11px] font-mono font-semibold flex items-center space-x-1.5 shadow-md animate-enter">
           <span id="recording-timer">00:00</span>
         </div>
 
-        <!-- Mic Button -->
         <button id="btn-mic" class="w-11 h-11 rounded-full bg-ios-blue active:scale-95 text-white flex items-center justify-center transition-all duration-200 touch-none">
           <i id="icon-mic" data-lucide="mic" class="w-5 h-5"></i>
         </button>
 
-        <!-- Send Button -->
         <button id="btn-send" class="hidden w-11 h-11 rounded-full bg-ios-green text-white items-center justify-center transition-all duration-200 active:scale-95">
           <i data-lucide="arrow-up" class="w-5 h-5"></i>
         </button>
       </div>
-
     </div>
   </div>
 
-  <!-- APPLICATION LOGIC -->
   <script>
     // CONFIGURATION
     const CONFIG = {
-      API_KEY: "YOUR_API_KEY_HERE",
+      WORKER_URL: "https://tasker-proxy-secret.sqwerxride.workers.dev", // Вставь сюда URL своего Cloudflare Воркера
+      MODEL: "meta-llama/llama-3.3-70b-instruct:free",
       SYNC_URL: "YOUR_SYNC_URL_HERE",
       SYNC_KEY: "YOUR_SYNC_KEY_HERE"
     };
 
-    // MONTH NAMES FOR CUSTOM PICKER
     const MONTHS = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
 
-    // STATE
     const state = {
       theme: localStorage.getItem('androma_theme') || 'dark',
       tasks: JSON.parse(localStorage.getItem('androma_tasks') || '[]'),
       activeTab: 'today',
       draftTasks: [],
-      editingContext: null, // { type: 'main' | 'draft', targetId / index }
+      editingContext: null,
       recording: {
         isRecording: false,
         isLocked: false,
-        mediaRecorder: null,
-        audioChunks: [],
+        speechRecognition: null,
+        transcriptText: "",
         startTime: null,
         timerInterval: null,
         startY: 0
       }
     };
 
-    // External Sync Init
     let syncClient = null;
     if (CONFIG.SYNC_URL && CONFIG.SYNC_KEY && CONFIG.SYNC_URL !== "YOUR_SYNC_URL_HERE" && window.supabase) {
       syncClient = window.supabase.createClient(CONFIG.SYNC_URL, CONFIG.SYNC_KEY);
     }
 
-    // DOM ELEMENTS
     const DOM = {
       btnThemeToggle: document.getElementById('btn-theme-toggle'),
       iconTheme: document.getElementById('icon-theme'),
@@ -377,7 +339,6 @@
       countCompleted: document.getElementById('count-completed')
     };
 
-    // INITIALIZATION
     document.addEventListener('DOMContentLoaded', () => {
       applyTheme(state.theme, false);
       buildCustomPickerOptions();
@@ -387,7 +348,6 @@
       lucide.createIcons();
     });
 
-    // THEME MANAGEMENT WITH ANIMATED ICON SWAP
     function applyTheme(theme, animate = true) {
       state.theme = theme;
       localStorage.setItem('androma_theme', theme);
@@ -416,13 +376,11 @@
     }
 
     function setupEventListeners() {
-      // Theme Toggle
       DOM.btnThemeToggle.addEventListener('click', () => {
         applyTheme(state.theme === 'dark' ? 'light' : 'dark', true);
         triggerHaptic(15);
       });
 
-      // Tab Switch
       document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           document.querySelectorAll('.tab-btn').forEach(b => {
@@ -436,41 +394,30 @@
         });
       });
 
-      // Input Auto-grow
       DOM.textInput.addEventListener('input', () => {
         DOM.textInput.style.height = 'auto';
         DOM.textInput.style.height = Math.min(DOM.textInput.scrollHeight, 96) + 'px';
         toggleSendButton();
       });
 
-      // Draft Actions
       DOM.btnCloseDraft.addEventListener('click', () => DOM.modalDraft.classList.add('hidden'));
       DOM.btnDiscardDraft.addEventListener('click', () => DOM.modalDraft.classList.add('hidden'));
       DOM.btnConfirmDraft.addEventListener('click', saveDraftTasks);
 
-      // Custom Date Picker
       DOM.btnCloseDatepicker.addEventListener('click', closeDatePicker);
       DOM.btnSaveDatepicker.addEventListener('click', saveCustomDatePicker);
 
-      // Send Action
       DOM.btnSend.addEventListener('click', handleSendAction);
 
-      // Mic Gesture Setup
       setupMicGestures();
     }
 
-    // 100% IN-HTML CUSTOM DATE & TIME PICKER LOGIC
     function buildCustomPickerOptions() {
-      // Days 1-31
       DOM.pickerDay.innerHTML = Array.from({length: 31}, (_, i) => `<option value="${i + 1}">${i + 1}</option>`).join('');
-      // Months
       DOM.pickerMonth.innerHTML = MONTHS.map((m, i) => `<option value="${i}">${m}</option>`).join('');
-      // Years (2026-2030)
       const currentYr = new Date().getFullYear();
       DOM.pickerYear.innerHTML = Array.from({length: 5}, (_, i) => `<option value="${currentYr + i}">${currentYr + i}</option>`).join('');
-      // Hours (00-23)
       DOM.pickerHour.innerHTML = Array.from({length: 24}, (_, i) => `<option value="${i}">${String(i).padStart(2, '0')}</option>`).join('');
-      // Minutes (00-59)
       DOM.pickerMinute.innerHTML = Array.from({length: 60}, (_, i) => `<option value="${i}">${String(i).padStart(2, '0')}</option>`).join('');
     }
 
@@ -495,13 +442,9 @@
 
     window.applyDatePreset = function(preset) {
       const d = new Date();
-      if (preset === 'tomorrow') {
-        d.setDate(d.getDate() + 1);
-      } else if (preset === 'plus1h') {
-        d.setHours(d.getHours() + 1);
-      } else if (preset === 'plus1d') {
-        d.setDate(d.getDate() + 1);
-      }
+      if (preset === 'tomorrow') d.setDate(d.getDate() + 1);
+      else if (preset === 'plus1h') d.setHours(d.getHours() + 1);
+      else if (preset === 'plus1d') d.setDate(d.getDate() + 1);
       populatePickerFromDate(d);
       triggerHaptic(10);
     };
@@ -550,7 +493,7 @@
       closeDatePicker();
     }
 
-    // MIC & RECORDING LOGIC
+    // NATIVE WEB SPEECH API RECOGNITION
     function setupMicGestures() {
       const btn = DOM.btnMic;
 
@@ -559,7 +502,7 @@
         state.recording.startY = clientY;
 
         if (!state.recording.isRecording) {
-          startRecording();
+          startSpeechRecognition();
           triggerHaptic(25);
         }
       };
@@ -580,7 +523,7 @@
 
       const handleEnd = () => {
         if (state.recording.isRecording && !state.recording.isLocked) {
-          stopRecordingAndProcess();
+          stopSpeechRecognitionAndProcess();
         }
       };
 
@@ -592,52 +535,61 @@
       btn.addEventListener('mouseup', handleEnd);
     }
 
-    async function startRecording() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        state.recording.audioChunks = [];
-        state.recording.mediaRecorder = new MediaRecorder(stream);
-
-        state.recording.mediaRecorder.ondataavailable = (e) => {
-          if (e.data.size > 0) state.recording.audioChunks.push(e.data);
-        };
-
-        state.recording.mediaRecorder.start();
-        state.recording.isRecording = true;
-        state.recording.startTime = Date.now();
-
-        DOM.btnMic.classList.remove('bg-ios-blue');
-        DOM.btnMic.classList.add('bg-ios-red');
-        DOM.iconMic.setAttribute('data-lucide', 'square');
-        lucide.createIcons();
-
-        state.recording.timerInterval = setInterval(() => {
-          const elapsedSec = Math.floor((Date.now() - state.recording.startTime) / 1000);
-          const mins = String(Math.floor(elapsedSec / 60)).padStart(2, '0');
-          const secs = String(elapsedSec % 60).padStart(2, '0');
-          DOM.recordingTimer.textContent = `${mins}:${secs}`;
-        }, 1000);
-
-      } catch (err) {
-        alert('Ошибка доступа к микрофону');
+    function startSpeechRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert('Ваш браузер не поддерживает встроенный голосовой ввод. Введите текст вручную.');
+        return;
       }
+
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'ru-RU';
+      recognition.interimResults = true;
+      recognition.continuous = true;
+
+      state.recording.transcriptText = "";
+      state.recording.speechRecognition = recognition;
+
+      recognition.onresult = (event) => {
+        let currentText = "";
+        for (let i = 0; i < event.results.length; i++) {
+          currentText += event.results[i][0].transcript;
+        }
+        state.recording.transcriptText = currentText;
+      };
+
+      recognition.start();
+      state.recording.isRecording = true;
+      state.recording.startTime = Date.now();
+
+      DOM.btnMic.classList.remove('bg-ios-blue');
+      DOM.btnMic.classList.add('bg-ios-red');
+      DOM.iconMic.setAttribute('data-lucide', 'square');
+      lucide.createIcons();
+
+      state.recording.timerInterval = setInterval(() => {
+        const elapsedSec = Math.floor((Date.now() - state.recording.startTime) / 1000);
+        const mins = String(Math.floor(elapsedSec / 60)).padStart(2, '0');
+        const secs = String(elapsedSec % 60).padStart(2, '0');
+        DOM.recordingTimer.textContent = `${mins}:${secs}`;
+      }, 1000);
     }
 
-    function stopRecordingAndProcess() {
-      if (!state.recording.mediaRecorder) return;
+    function stopSpeechRecognitionAndProcess() {
+      if (!state.recording.speechRecognition) return;
 
-      state.recording.mediaRecorder.stop();
-      state.recording.mediaRecorder.stream.getTracks().forEach(track => track.stop());
+      state.recording.speechRecognition.stop();
       clearInterval(state.recording.timerInterval);
 
-      state.recording.mediaRecorder.onstop = async () => {
-        const audioBlob = new Blob(state.recording.audioChunks, { type: 'audio/webm' });
+      setTimeout(async () => {
+        const text = state.recording.transcriptText.trim();
         resetMicUI();
-
-        if (audioBlob.size > 0) {
-          await processVoiceInput(audioBlob);
+        if (text) {
+          await processTextInput(text);
+        } else {
+          alert('Речь не распознана');
         }
-      };
+      }, 400);
     }
 
     function resetMicUI() {
@@ -665,7 +617,7 @@
 
     async function handleSendAction() {
       if (state.recording.isRecording) {
-        stopRecordingAndProcess();
+        stopSpeechRecognitionAndProcess();
         return;
       }
 
@@ -678,55 +630,13 @@
       }
     }
 
-    // AI PARSING ENGINE
-    async function processVoiceInput(audioBlob) {
-      if (!CONFIG.API_KEY || CONFIG.API_KEY === "YOUR_API_KEY_HERE") {
-        simulateLocalParse("Голосовая заметка");
-        return;
-      }
-
-      showLoader(true);
-      try {
-        const formData = new FormData();
-        formData.append('file', audioBlob, 'speech.webm');
-        formData.append('model', 'whisper-large-v3');
-        formData.append('language', 'ru');
-
-        const whisperRes = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${CONFIG.API_KEY}` },
-          body: formData
-        });
-
-        if (!whisperRes.ok) throw new Error('Ошибка расшифровки');
-        const whisperData = await whisperRes.json();
-        const transcribedText = whisperData.text;
-
-        if (!transcribedText || !transcribedText.trim()) {
-          alert('Речь не распознана.');
-          showLoader(false);
-          return;
-        }
-
-        await processTextInput(transcribedText);
-
-      } catch (err) {
-        simulateLocalParse("Голосовая запись");
-      }
-    }
-
     async function processTextInput(rawText) {
-      if (!CONFIG.API_KEY || CONFIG.API_KEY === "YOUR_API_KEY_HERE") {
-        simulateLocalParse(rawText);
-        return;
-      }
-
       showLoader(true);
       try {
-        const systemPrompt = `You are the AI engine for "Androma Tasker". Convert user request into a JSON structure.
+        const systemPrompt = `You are the AI engine for "Androma Tasker". Convert user request into a strict JSON structure.
 Current ISO timestamp: ${new Date().toISOString()}
 
-Return ONLY a JSON object:
+Return ONLY a valid JSON object without markdown formatting:
 {
   "summary": "Short 1-sentence overview",
   "tasks": [
@@ -741,14 +651,11 @@ Return ONLY a JSON object:
   ]
 }`;
 
-        const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        const res = await fetch(`${CONFIG.WORKER_URL}/chat/completions`, {
           method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${CONFIG.API_KEY}`,
-            'Content-Type': 'application/json'
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            model: 'llama-3.3-70b-versatile',
+            model: CONFIG.MODEL,
             messages: [
               { role: 'system', content: systemPrompt },
               { role: 'user', content: rawText }
@@ -758,14 +665,19 @@ Return ONLY a JSON object:
           })
         });
 
-        if (!res.ok) throw new Error('Ошибка обработки');
+        if (!res.ok) throw new Error('Ошибка связи с Воркером');
         const data = await res.json();
-        const parsed = JSON.parse(data.choices[0].message.content);
+        
+        let content = data.choices[0].message.content;
+        // Чистим ответ от возможного markdown кода
+        content = content.replace(/```json/g, '').replace(/```/g, '').trim();
+        const parsed = JSON.parse(content);
 
         showLoader(false);
         openDraftModal(parsed);
 
       } catch (err) {
+        console.error('Ошибка:', err);
         simulateLocalParse(rawText);
       }
     }
@@ -779,7 +691,7 @@ Return ONLY a JSON object:
           tasks: [{
             id: 'task_' + Date.now(),
             title: text,
-            description: 'Создано через быстрое добавление.',
+            description: 'Создано через локальный обработчик.',
             due_date: new Date(Date.now() + 3600000 * 2).toISOString(),
             priority: 'normal',
             is_completed: false
@@ -788,7 +700,6 @@ Return ONLY a JSON object:
       }, 500);
     }
 
-    // DRAFT SHEET MODAL
     function openDraftModal(parsedData) {
       state.draftTasks = parsedData.tasks || [];
       DOM.draftSummary.textContent = parsedData.summary || 'План задач';
@@ -807,7 +718,6 @@ Return ONLY a JSON object:
           </div>
           <textarea onchange="updateDraftTask(${idx}, 'description', this.value)" class="w-full bg-transparent text-xs text-ios-textSecondary focus:outline-none resize-none leading-relaxed border-b border-transparent focus:border-ios-blue">${escapeHtml(t.description)}</textarea>
           
-          <!-- Custom Time Editing directly inside AI Draft Sheet -->
           <div class="pt-1 flex items-center justify-between">
             <span class="text-[10px] text-ios-textSecondary">Срок выполнения:</span>
             <button onclick="openCustomDatePicker('draft', ${idx})" class="px-3 py-1 rounded-full bg-ios-blue/15 text-ios-blue hover:bg-ios-blue/25 text-[11px] font-semibold flex items-center space-x-1.5 transition active:scale-95">
@@ -833,7 +743,6 @@ Return ONLY a JSON object:
       triggerHaptic(30);
     }
 
-    // TASK LIST RENDER & ANIMATIONS
     function renderTasks() {
       const filtered = filterTasksByTab(state.activeTab);
       updateTabCounts();
@@ -852,15 +761,12 @@ Return ONLY a JSON object:
         <div id="task-card-${task.id}" class="ios-card rounded-2xl p-4 shadow-sm animate-enter">
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-3 flex-1 min-w-0 pr-2">
-              
-              <!-- Checkbox -->
               <button onclick="toggleTaskCompletion('${task.id}')" class="w-6 h-6 rounded-full border-2 ${task.is_completed ? 'bg-ios-blue border-ios-blue flex items-center justify-center' : 'border-ios-textSecondary bg-transparent'} transition flex-shrink-0 active:scale-90">
                 ${task.is_completed ? '<i data-lucide="check" class="w-3.5 h-3.5 text-white"></i>' : ''}
               </button>
 
               <div class="min-w-0 flex-1">
                 <div class="flex items-center space-x-2">
-                  <!-- Custom Time Trigger -->
                   <button onclick="openCustomDatePicker('main', '${task.id}')" class="text-[11px] font-medium text-ios-blue hover:underline flex items-center space-x-1">
                     <span>${formatDate(task.due_date)}</span>
                     <i data-lucide="edit-2" class="w-2.5 h-2.5"></i>
@@ -871,13 +777,11 @@ Return ONLY a JSON object:
               </div>
             </div>
 
-            <!-- Accordion Chevron -->
             <button onclick="toggleAccordion(event, 'desc-${task.id}')" class="w-8 h-8 rounded-full ios-subcard flex items-center justify-center text-ios-textSecondary hover:text-ios-blue transition active:scale-95">
               <i data-lucide="chevron-down" class="w-4 h-4 transition-transform duration-200" id="arrow-desc-${task.id}"></i>
             </button>
           </div>
 
-          <!-- Expanded Accordion -->
           <div id="desc-${task.id}" class="hidden pt-3 mt-3 border-t border-white/10 text-xs text-ios-textSecondary leading-relaxed">
             <p>${escapeHtml(task.description || 'Описание отсутствует.')}</p>
             <div class="mt-3 flex justify-end space-x-2">
@@ -940,7 +844,6 @@ Return ONLY a JSON object:
       }
     };
 
-    // TABS & ANIMATED COUNTERS
     function filterTasksByTab(tab) {
       const now = new Date();
       return state.tasks.filter(t => {
@@ -966,12 +869,11 @@ Return ONLY a JSON object:
       if (element.textContent !== String(newValue)) {
         element.textContent = newValue;
         element.classList.remove('animate-pop');
-        void element.offsetWidth; // Trigger reflow
+        void element.offsetWidth;
         element.classList.add('animate-pop');
       }
     }
 
-    // STATE STORAGE & SYNC
     async function saveTasksState() {
       localStorage.setItem('androma_tasks', JSON.stringify(state.tasks));
 
@@ -999,7 +901,6 @@ Return ONLY a JSON object:
       }, 30000);
     }
 
-    // UTILS
     function showLoader(show) {
       if (show) DOM.aiLoader.classList.remove('hidden');
       else DOM.aiLoader.classList.add('hidden');
