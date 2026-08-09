@@ -278,10 +278,10 @@
   <script>
     // CONFIGURATION
     const CONFIG = {
-      WORKER_URL: "https://tasker-proxy-secret.sqwerxride.workers.dev", // Вставь сюда URL своего Cloudflare Воркера
+      WORKER_URL: "https://tasker-proxy-secret.sqwerxride.workers.dev",
       MODEL: "meta-llama/llama-3.3-70b-instruct:free",
-      SYNC_URL: "YOUR_SYNC_URL_HERE",
-      SYNC_KEY: "YOUR_SYNC_KEY_HERE"
+      SYNC_URL: "https://kgbkbnzwxwcvnxbugoja.supabase.co",
+      SYNC_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtnYmtibnp3eHdjdm54YnVnb2phIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYyMjM3MjUsImV4cCI6MjEwMTc5OTcyNX0.XUeuSRaa82P4-fuEV2yDgXHcraeWUpLgQfel32pptQw"
     };
 
     const MONTHS = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
@@ -339,14 +339,33 @@
       countCompleted: document.getElementById('count-completed')
     };
 
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       applyTheme(state.theme, false);
       buildCustomPickerOptions();
       setupEventListeners();
+      
+      await loadTasksFromSupabase();
+      
       renderTasks();
       startDueDateChecker();
       lucide.createIcons();
     });
+
+    async function loadTasksFromSupabase() {
+      if (!syncClient) return;
+
+      try {
+        const { data, error } = await syncClient.from('tasks').select('*');
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          state.tasks = data;
+          localStorage.setItem('androma_tasks', JSON.stringify(data));
+        }
+      } catch (err) {
+        console.warn('Ошибка загрузки из Supabase, используем локальные данные:', err.message);
+      }
+    }
 
     function applyTheme(theme, animate = true) {
       state.theme = theme;
@@ -493,7 +512,6 @@
       closeDatePicker();
     }
 
-    // NATIVE WEB SPEECH API RECOGNITION
     function setupMicGestures() {
       const btn = DOM.btnMic;
 
@@ -669,7 +687,6 @@ Return ONLY a valid JSON object without markdown formatting:
         const data = await res.json();
         
         let content = data.choices[0].message.content;
-        // Чистим ответ от возможного markdown кода
         content = content.replace(/```json/g, '').replace(/```/g, '').trim();
         const parsed = JSON.parse(content);
 
@@ -835,9 +852,18 @@ Return ONLY a valid JSON object without markdown formatting:
       const cardEl = document.getElementById(`task-card-${id}`);
       if (cardEl) {
         cardEl.classList.add('animate-exit');
-        setTimeout(() => {
+        setTimeout(async () => {
           state.tasks = state.tasks.filter(t => t.id !== id);
           saveTasksState();
+
+          if (syncClient) {
+            try {
+              await syncClient.from('tasks').delete().eq('id', id);
+            } catch (err) {
+              console.warn('Ошибка удаления из Supabase:', err.message);
+            }
+          }
+
           renderTasks();
           triggerHaptic(30);
         }, 200);
@@ -879,7 +905,8 @@ Return ONLY a valid JSON object without markdown formatting:
 
       if (syncClient) {
         try {
-          await syncClient.from('tasks').upsert(state.tasks);
+          const { error } = await syncClient.from('tasks').upsert(state.tasks);
+          if (error) console.error('Ошибка сохранения в Supabase:', error.message);
         } catch (err) {
           console.warn('Sync error:', err.message);
         }
